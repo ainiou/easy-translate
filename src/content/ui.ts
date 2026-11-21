@@ -43,13 +43,13 @@ export class SelectionTranslatorUI {
     this.panel = document.createElement('section')
     this.panel.className = 'translation-panel'
     this.panel.setAttribute('role', 'dialog')
-    this.panel.setAttribute('aria-label', '划词翻译结果')
+    this.panel.setAttribute('aria-label', 'Easy Translate 翻译结果')
     this.panel.hidden = true
 
     const header = document.createElement('header')
     header.className = 'panel-header'
     const title = document.createElement('strong')
-    title.textContent = '划词翻译'
+    title.textContent = 'ET 翻译'
     const closeButton = document.createElement('button')
     closeButton.type = 'button'
     closeButton.className = 'close-button'

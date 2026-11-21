@@ -65,9 +65,9 @@ onMounted(async () => {
 <template>
   <main class="popup-shell">
     <header>
-      <div class="brand-mark" aria-hidden="true">译</div>
+      <div class="brand-mark" aria-hidden="true">ET</div>
       <div>
-        <h1>划词翻译</h1>
+        <h1>Easy Translate</h1>
         <p>选中网页文字，点击翻译按钮</p>
       </div>
     </header>

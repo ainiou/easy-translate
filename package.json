@@ -1,22 +1,20 @@
 {
   "name": "selection-translator-extension",
-  "version": "1.0.3",
+  "version": "1.2.1",
   "private": true,
   "type": "module",
-  "displayName": "划词翻译 Selection Translator",
-  "description": "在 VS Code 编辑器中翻译选区，支持 OpenAI 兼容接口、有道、百度、DeepL 和 Google。",
+  "displayName": "Easy Translate",
+  "description": "Easy Translate (ET)：在 VS Code 编辑器中翻译选区，支持 OpenAI 兼容接口、有道、百度、DeepL 和 Google。",
   "publisher": "selection-translator",
+  "icon": "public/icons/icon-256.png",
   "engines": {
-    "vscode": "^1.95.0"
+    "vscode": "^1.80.0"
   },
   "categories": [
     "Other"
   ],
   "activationEvents": [
-    "onCommand:selectionTranslator.translate",
-    "onCommand:selectionTranslator.manageEngines",
-    "onCommand:selectionTranslator.selectDefaultEngine",
-    "onCommand:selectionTranslator.setTargetLanguage"
+    "onStartupFinished"
   ],
   "main": "./dist-vscode/extension.cjs",
   "contributes": {
@@ -24,22 +22,22 @@
       {
         "command": "selectionTranslator.translate",
         "title": "翻译选中内容",
-        "category": "划词翻译"
+        "category": "ET"
       },
       {
         "command": "selectionTranslator.manageEngines",
         "title": "管理翻译引擎",
-        "category": "划词翻译"
+        "category": "ET"
       },
       {
         "command": "selectionTranslator.selectDefaultEngine",
         "title": "选择默认翻译引擎",
-        "category": "划词翻译"
+        "category": "ET"
       },
       {
         "command": "selectionTranslator.setTargetLanguage",
         "title": "设置目标语言",
-        "category": "划词翻译"
+        "category": "ET"
       }
     ],
     "menus": {
@@ -60,12 +58,24 @@
       }
     ],
     "configuration": {
-      "title": "划词翻译",
+      "title": "Easy Translate (ET)",
       "properties": {
         "selectionTranslator.targetLanguage": {
           "type": "string",
           "default": "简体中文",
           "description": "默认目标语言，可填写语言名称或语言代码。"
+        },
+        "selectionTranslator.autoTranslate": {
+          "type": "boolean",
+          "default": true,
+          "description": "选中文本后自动在选区附近显示悬浮翻译；关闭后仍可使用右键或快捷键翻译。"
+        },
+        "selectionTranslator.hoverAutoHideDelay": {
+          "type": "number",
+          "default": 800,
+          "minimum": 0,
+          "maximum": 60000,
+          "description": "选区取消后悬浮翻译的延迟关闭时间（毫秒），0 表示立即关闭；固定浮窗后不自动关闭。"
         }
       }
     }
@@ -76,19 +86,20 @@
     "build:vscode:extension": "vite build --config vite.vscode.config.ts",
     "build:vscode:webview": "vite build --config vite.webview.config.ts",
     "build:vscode": "npm run build:vscode:extension && npm run build:vscode:webview",
-    "package:vscode": "npm run build:vscode && vsce package --no-dependencies --allow-missing-repository -o selection-translator.vsix",
+    "package:vscode": "npm run build:vscode && vsce package --no-dependencies --allow-missing-repository -o easy-translate.vsix",
     "typecheck": "vue-tsc --noEmit",
     "test": "vitest run"
   },
   "dependencies": {
     "js-md5": "0.11.0",
+    "undici": "5.29.0",
     "vue": "3.5.46"
   },
   "devDependencies": {
     "@crxjs/vite-plugin": "3.0.0",
     "@types/chrome": "0.3.7",
     "@types/node": "^22.20.5",
-    "@types/vscode": "^1.95.0",
+    "@types/vscode": "1.80.0",
     "@vitejs/plugin-vue": "6.0.11",
     "@vscode/vsce": "^4.1.1",
     "typescript": "5.9.3",

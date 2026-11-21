@@ -1,8 +1,7 @@
 import * as vscode from 'vscode'
 import { SettingsPanel } from './settings-panel'
 import { EngineStore } from './store'
-import { TranslationPanel } from './translation-panel'
-import { translateSelection } from './translator'
+import { TranslationHover } from './translator'
 
 interface EngineQuickPickItem extends vscode.QuickPickItem {
   engineId: string
@@ -10,10 +9,24 @@ interface EngineQuickPickItem extends vscode.QuickPickItem {
 
 export function activate(context: vscode.ExtensionContext): void {
   const store = new EngineStore(context)
+  const translationHover = new TranslationHover(store)
 
   context.subscriptions.push(
+    translationHover,
     vscode.commands.registerCommand('selectionTranslator.translate', () =>
-      translateSelection(store),
+      translationHover.translateSelection(),
+    ),
+    vscode.commands.registerCommand('selectionTranslator.copyHoverTranslation', () =>
+      translationHover.copyTranslation(),
+    ),
+    vscode.commands.registerCommand('selectionTranslator.toggleHoverLanguage', () =>
+      translationHover.toggleLanguage(),
+    ),
+    vscode.commands.registerCommand('selectionTranslator.toggleHoverPin', () =>
+      translationHover.togglePin(),
+    ),
+    vscode.commands.registerCommand('selectionTranslator.replaceHoverSelection', () =>
+      translationHover.replaceOriginal(),
     ),
     vscode.commands.registerCommand('selectionTranslator.manageEngines', () =>
       SettingsPanel.createOrShow(context.extensionUri, store),
@@ -55,7 +68,6 @@ export function activate(context: vscode.ExtensionContext): void {
         await vscode.window.showInformationMessage(`目标语言已设置为 ${targetLanguage.trim()}`)
       }
     }),
-    { dispose: () => TranslationPanel.dispose() },
     { dispose: () => SettingsPanel.dispose() },
   )
 }

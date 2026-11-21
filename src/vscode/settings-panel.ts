@@ -94,7 +94,7 @@ export class SettingsPanel {
         setDefaultEngine: '设置默认引擎',
         setTargetLanguage: '设置目标语言',
       }
-      console.error(`[划词翻译] ${actionLabels[request.type]}失败`, error)
+      console.error(`[Easy Translate] ${actionLabels[request.type]}失败`, error)
       await this.panel.webview.postMessage({
         id: request.id,
         ok: false,

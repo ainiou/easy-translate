@@ -96,4 +96,27 @@ describe('translateWithEngine', () => {
       translateWithEngine(engine, 'Hello', '简体中文', fetchMock),
     ).rejects.toThrow('无法连接翻译服务')
   })
+
+  it('aborts an unresponsive request after 30 seconds', async () => {
+    vi.useFakeTimers()
+    try {
+      const fetchMock = vi.fn<typeof fetch>().mockImplementation(
+        (_input, init) =>
+          new Promise<Response>((_resolve, reject) => {
+            init?.signal?.addEventListener('abort', () => {
+              const error = new Error('aborted')
+              error.name = 'AbortError'
+              reject(error)
+            })
+          }),
+      )
+      const translation = translateWithEngine(engine, 'Hello', '简体中文', fetchMock)
+      const rejection = expect(translation).rejects.toThrow('翻译请求超时')
+
+      await vi.advanceTimersByTimeAsync(30_000)
+      await rejection
+    } finally {
+      vi.useRealTimers()
+    }
+  })
 })

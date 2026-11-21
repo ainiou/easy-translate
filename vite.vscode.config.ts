@@ -10,7 +10,7 @@ export default defineConfig({
   build: {
     outDir: 'dist-vscode',
     emptyOutDir: true,
-    target: 'node20',
+    target: 'node16',
     sourcemap: true,
     minify: false,
     lib: {

@@ -251,7 +251,7 @@ onMounted(async () => {
   <main class="page-shell">
     <header class="page-header">
       <div>
-        <p class="eyebrow">SELECTION TRANSLATOR</p>
+        <p class="eyebrow">EASY TRANSLATE · ET</p>
         <h1>翻译引擎设置</h1>
         <p class="subtitle">支持 OpenAI 兼容接口、有道、百度、DeepL 和 Google 翻译服务。</p>
       </div>

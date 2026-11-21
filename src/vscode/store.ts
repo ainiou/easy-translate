@@ -1,7 +1,7 @@
 import { randomUUID } from 'node:crypto'
 import * as vscode from 'vscode'
 import { normalizeSettings } from '../shared/settings'
-import { translateWithEngine } from '../shared/translate'
+import { translateText } from './fetch'
 import type { EngineConfig } from '../shared/types'
 import {
   errorMessage,
@@ -175,7 +175,7 @@ export class EngineStore {
 
   async testEngine(payload: EngineEditPayload): Promise<string> {
     const engine = await this.resolveEngine(payload)
-    return translateWithEngine(engine, 'Hello', this.getTargetLanguage())
+    return translateText(engine, 'Hello', this.getTargetLanguage())
   }
 
   async deleteEngine(engineId: string): Promise<ExtensionViewState> {

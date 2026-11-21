@@ -15,7 +15,7 @@ chrome:
 vscode:
 	$(NPM) run build:vscode
 
-# 构建并打包 VS Code 插件，生成 selection-translator.vsix。
+# 构建并打包 VS Code 插件，生成 easy-translate.vsix。
 package-vscode:
 	$(NPM) run package:vscode
 

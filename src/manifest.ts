@@ -2,9 +2,15 @@ import { defineManifest } from '@crxjs/vite-plugin'
 
 export default defineManifest({
   manifest_version: 3,
-  name: '划词翻译',
+  name: 'Easy Translate',
   version: '0.0.1',
-  description: '使用自定义 OpenAI 兼容接口翻译网页选中文本。',
+  description: 'Easy Translate (ET)：使用自定义翻译引擎翻译网页选中文本。',
+  icons: {
+    '16': 'icons/icon-16.png',
+    '32': 'icons/icon-32.png',
+    '48': 'icons/icon-48.png',
+    '128': 'icons/icon-128.png',
+  },
   permissions: ['storage'],
   optional_host_permissions: ['<all_urls>'],
   background: {
@@ -13,7 +19,13 @@ export default defineManifest({
   },
   action: {
     default_popup: 'src/popup/index.html',
-    default_title: '划词翻译',
+    default_title: 'Easy Translate (ET)',
+    default_icon: {
+      '16': 'icons/icon-16.png',
+      '32': 'icons/icon-32.png',
+      '48': 'icons/icon-48.png',
+      '128': 'icons/icon-128.png',
+    },
   },
   options_page: 'src/options/index.html',
   content_scripts: [
