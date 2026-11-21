@@ -1,0 +1,6 @@
+.vscode
+.env
+.trae
+dist
+.screenshots
+node_modules

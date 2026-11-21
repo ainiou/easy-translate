@@ -1,0 +1,146 @@
+[hidden] {
+  display: none !important;
+}
+
+.translate-trigger,
+.translation-panel {
+  position: fixed;
+  box-sizing: border-box;
+  color: #1d2939;
+  font-family: Inter, "PingFang SC", "Microsoft YaHei", sans-serif;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.translate-trigger {
+  display: grid;
+  width: 40px;
+  height: 36px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 10px;
+  outline: none;
+  color: #fff;
+  background: #565ed8;
+  box-shadow: 0 6px 20px rgb(28 35 74 / 24%);
+  cursor: pointer;
+  font-size: 17px;
+  font-weight: 700;
+  transition: background 0.16s ease, transform 0.16s ease;
+}
+
+.translate-trigger:hover {
+  background: #464dc2;
+  transform: translateY(-1px);
+}
+
+.translate-trigger:focus-visible,
+.close-button:focus-visible {
+  outline: 3px solid rgb(86 94 216 / 35%);
+  outline-offset: 2px;
+}
+
+.translation-panel {
+  display: flex;
+  overflow: hidden;
+  max-height: min(440px, calc(100vh - 16px));
+  flex-direction: column;
+  border: 1px solid #e3e7ee;
+  border-radius: 14px;
+  background: #fff;
+  box-shadow: 0 16px 48px rgb(24 34 48 / 20%);
+}
+
+.panel-header {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  justify-content: space-between;
+  padding: 12px 14px;
+  border-bottom: 1px solid #edf0f4;
+  background: #fafbfc;
+}
+
+.panel-header strong {
+  font-size: 13px;
+  font-weight: 650;
+}
+
+.close-button {
+  display: grid;
+  width: 26px;
+  height: 26px;
+  padding: 0;
+  place-items: center;
+  border: 0;
+  border-radius: 7px;
+  color: #667085;
+  background: transparent;
+  cursor: pointer;
+  font-size: 20px;
+  line-height: 1;
+}
+
+.close-button:hover {
+  color: #344054;
+  background: #edf0f4;
+}
+
+.panel-body {
+  overflow: auto;
+  min-height: 64px;
+  padding: 16px;
+  overscroll-behavior: contain;
+}
+
+.translation-text {
+  color: #253044;
+  cursor: text;
+  line-height: 1.75;
+  overflow-wrap: anywhere;
+  user-select: text;
+  white-space: pre-wrap;
+}
+
+.loading-state {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  min-height: 40px;
+  color: #667085;
+  font-size: 13px;
+}
+
+.spinner {
+  width: 17px;
+  height: 17px;
+  border: 2px solid #dfe3f8;
+  border-top-color: #565ed8;
+  border-radius: 50%;
+  animation: translator-spin 0.8s linear infinite;
+}
+
+.error-state {
+  color: #b42318;
+  font-size: 13px;
+  line-height: 1.65;
+  overflow-wrap: anywhere;
+}
+
+@keyframes translator-spin {
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .translate-trigger {
+    transition: none;
+  }
+
+  .spinner {
+    animation-duration: 1.8s;
+  }
+}
