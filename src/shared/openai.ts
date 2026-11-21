@@ -57,7 +57,7 @@ export async function translateWithEngine(
           messages: [
             {
               role: 'system',
-              content: `You are a translation engine. Detect the source language automatically and translate the user's text into ${targetLanguage}. Preserve the original meaning and basic line breaks. Return only the translated text without explanations.`,
+              content: `You are a professional English-Chinese bidirectional translation engine. Detect the source language automatically. Translate English into Simplified Chinese, and translate Chinese into English. If the source text is neither English nor Chinese, translate it into ${targetLanguage}. Preserve the original meaning and basic line breaks. Return only the translated text without explanations.`,
             },
             { role: 'user', content: text },
           ],

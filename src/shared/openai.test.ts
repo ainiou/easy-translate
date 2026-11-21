@@ -45,7 +45,11 @@ describe('translateWithEngine', () => {
     }
     expect(body.model).toBe('test-model')
     expect(body.stream).toBe(false)
-    expect(body.messages[0]?.content).toContain('简体中文')
+    expect(body.messages[0]?.content).toContain('Translate English into Simplified Chinese')
+    expect(body.messages[0]?.content).toContain('translate Chinese into English')
+    expect(body.messages[0]?.content).toContain(
+      'If the source text is neither English nor Chinese, translate it into 简体中文',
+    )
     expect(body.messages[1]).toEqual({ role: 'user', content: 'Hello' })
   })
 
