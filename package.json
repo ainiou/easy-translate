@@ -1,11 +1,82 @@
 {
   "name": "selection-translator-extension",
-  "version": "1.0.0",
+  "version": "1.0.2",
   "private": true,
   "type": "module",
+  "displayName": "划词翻译 Selection Translator",
+  "description": "在 VS Code 编辑器中翻译选区，支持 OpenAI 兼容接口、有道、百度、DeepL 和 Google。",
+  "publisher": "selection-translator",
+  "engines": {
+    "vscode": "^1.95.0"
+  },
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:selectionTranslator.translate",
+    "onCommand:selectionTranslator.manageEngines",
+    "onCommand:selectionTranslator.selectDefaultEngine",
+    "onCommand:selectionTranslator.setTargetLanguage"
+  ],
+  "main": "./dist-vscode/extension.cjs",
+  "contributes": {
+    "commands": [
+      {
+        "command": "selectionTranslator.translate",
+        "title": "翻译选中内容",
+        "category": "划词翻译"
+      },
+      {
+        "command": "selectionTranslator.manageEngines",
+        "title": "管理翻译引擎",
+        "category": "划词翻译"
+      },
+      {
+        "command": "selectionTranslator.selectDefaultEngine",
+        "title": "选择默认翻译引擎",
+        "category": "划词翻译"
+      },
+      {
+        "command": "selectionTranslator.setTargetLanguage",
+        "title": "设置目标语言",
+        "category": "划词翻译"
+      }
+    ],
+    "menus": {
+      "editor/context": [
+        {
+          "command": "selectionTranslator.translate",
+          "when": "editorHasSelection",
+          "group": "selectionTranslator@1"
+        }
+      ]
+    },
+    "keybindings": [
+      {
+        "command": "selectionTranslator.translate",
+        "key": "ctrl+alt+t",
+        "mac": "cmd+alt+t",
+        "when": "editorHasSelection"
+      }
+    ],
+    "configuration": {
+      "title": "划词翻译",
+      "properties": {
+        "selectionTranslator.targetLanguage": {
+          "type": "string",
+          "default": "简体中文",
+          "description": "默认目标语言，可填写语言名称或语言代码。"
+        }
+      }
+    }
+  },
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "build:vscode:extension": "vite build --config vite.vscode.config.ts",
+    "build:vscode:webview": "vite build --config vite.webview.config.ts",
+    "build:vscode": "npm run build:vscode:extension && npm run build:vscode:webview",
+    "package:vscode": "npm run build:vscode && vsce package --no-dependencies --allow-missing-repository -o selection-translator.vsix",
     "typecheck": "vue-tsc --noEmit",
     "test": "vitest run"
   },
@@ -16,7 +87,10 @@
   "devDependencies": {
     "@crxjs/vite-plugin": "3.0.0",
     "@types/chrome": "0.3.7",
+    "@types/node": "^22.20.5",
+    "@types/vscode": "^1.95.0",
     "@vitejs/plugin-vue": "6.0.11",
+    "@vscode/vsce": "^4.1.1",
     "typescript": "5.9.3",
     "vite": "8.3.8",
     "vitest": "5.1.1",

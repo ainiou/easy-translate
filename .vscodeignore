@@ -1,0 +1,14 @@
+.vscode/**
+.git/**
+.gitignore
+.trae/**
+.screenshots/**
+dist/**
+node_modules/**
+src/**
+*.config.ts
+tsconfig.json
+package-lock.json
+使用文档.md
+*.vsix
+**/*.map

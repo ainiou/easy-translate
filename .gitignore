@@ -2,5 +2,7 @@
 .env
 .trae
 dist
+dist-vscode
+*.vsix
 .screenshots
 node_modules
