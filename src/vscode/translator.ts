@@ -66,6 +66,17 @@ export class TranslationHover implements vscode.Disposable {
     await this.startTranslation(editor, range)
   }
 
+  cancelTranslation(): void {
+    if (!this.session) return
+    this.dismiss()
+    vscode.window.setStatusBarMessage('ET：已终止翻译', 1500)
+  }
+
+  hideActiveTranslation(): void {
+    if (!this.session) return
+    this.dismiss()
+  }
+
   async copyTranslation(): Promise<void> {
     if (this.session?.status !== 'success' || !this.session.translation) return
     await vscode.env.clipboard.writeText(this.session.translation)
@@ -150,6 +161,7 @@ export class TranslationHover implements vscode.Disposable {
     this.clearHideTimer()
     this.session = undefined
     for (const disposable of this.disposables) disposable.dispose()
+    this.updateContext(false)
     void this.hideHover()
   }
 
@@ -195,6 +207,7 @@ export class TranslationHover implements vscode.Disposable {
     }
     this.session = session
     this.lastSelectionKey = this.selectionKey(editor, range)
+    this.updateContext(true)
     await this.showHover(false)
     if (!this.isCurrent(requestId, session)) {
       return
@@ -291,7 +304,16 @@ export class TranslationHover implements vscode.Disposable {
     this.clearSelectionTimer()
     this.clearHideTimer()
     this.session = undefined
+    this.updateContext(false)
     void this.hideHover()
+  }
+
+  private updateContext(active: boolean): void {
+    void vscode.commands.executeCommand(
+      'setContext',
+      'selectionTranslator.hasTranslation',
+      active,
+    )
   }
 
   private isCurrent(requestId: number, session: TranslationSession): boolean {

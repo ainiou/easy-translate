@@ -50,6 +50,8 @@ describe('settings', () => {
       engines: [],
       defaultEngineId: null,
       targetLanguage: '简体中文',
+      holdToTranslate: false,
+      holdTriggerKey: 'Alt',
     })
   })
 
@@ -58,6 +60,8 @@ describe('settings', () => {
       engines: [firstEngine, secondEngine],
       defaultEngineId: firstEngine.id,
       targetLanguage: 'English',
+      holdToTranslate: false,
+      holdTriggerKey: 'Alt',
     }
     await saveSettings(settings)
 
@@ -79,8 +83,20 @@ describe('settings', () => {
       engines: [{ ...firstEngine, apiKey: '' }],
       defaultEngineId: firstEngine.id,
       targetLanguage: '简体中文',
+      holdToTranslate: false,
+      holdTriggerKey: 'Alt',
     })
     expect(normalized.engines[0]?.appId).toBe('')
     expect(normalized.engines[0]?.appSecret).toBe('')
+  })
+
+  it('keeps valid trigger settings and repairs invalid ones', () => {
+    const enabled = normalizeSettings({ holdToTranslate: true, holdTriggerKey: 'Control' })
+    expect(enabled.holdToTranslate).toBe(true)
+    expect(enabled.holdTriggerKey).toBe('Control')
+
+    const repaired = normalizeSettings({ holdToTranslate: 'yes', holdTriggerKey: 'Meta' })
+    expect(repaired.holdToTranslate).toBe(false)
+    expect(repaired.holdTriggerKey).toBe('Alt')
   })
 })

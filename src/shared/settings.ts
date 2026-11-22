@@ -1,4 +1,4 @@
-import type { EngineConfig, EngineType, ExtensionSettings } from './types'
+import type { EngineConfig, EngineType, ExtensionSettings, HoldTriggerKey } from './types'
 
 const ENGINE_TYPES: EngineType[] = [
   'openai-compatible',
@@ -15,12 +15,21 @@ function isEngineType(value: unknown): value is EngineType {
 
 const STORAGE_KEY = 'settings'
 const DEFAULT_TARGET_LANGUAGE = '简体中文'
+const HOLD_TRIGGER_KEYS: HoldTriggerKey[] = ['Alt', 'Control', 'Shift']
+
+export const SETTINGS_STORAGE_KEY = STORAGE_KEY
+
+function isHoldTriggerKey(value: unknown): value is HoldTriggerKey {
+  return typeof value === 'string' && HOLD_TRIGGER_KEYS.includes(value as HoldTriggerKey)
+}
 
 export function createDefaultSettings(): ExtensionSettings {
   return {
     engines: [],
     defaultEngineId: null,
     targetLanguage: DEFAULT_TARGET_LANGUAGE,
+    holdToTranslate: false,
+    holdTriggerKey: 'Alt',
   }
 }
 
@@ -68,8 +77,18 @@ export function normalizeSettings(value: unknown): ExtensionSettings {
     typeof settings.targetLanguage === 'string' && settings.targetLanguage.trim()
       ? settings.targetLanguage.trim()
       : DEFAULT_TARGET_LANGUAGE
+  const holdToTranslate = settings.holdToTranslate === true
+  const holdTriggerKey = isHoldTriggerKey(settings.holdTriggerKey)
+    ? settings.holdTriggerKey
+    : 'Alt'
 
-  return { engines, defaultEngineId, targetLanguage }
+  return {
+    engines,
+    defaultEngineId,
+    targetLanguage,
+    holdToTranslate,
+    holdTriggerKey,
+  }
 }
 
 export async function getSettings(): Promise<ExtensionSettings> {

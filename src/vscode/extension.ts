@@ -1,5 +1,7 @@
 import * as vscode from 'vscode'
 import { SettingsPanel } from './settings-panel'
+import { TranslationStatusBar } from './status-bar'
+import { TOGGLE_STATUS_BAR_COMMAND } from './status-bar-state'
 import { EngineStore } from './store'
 import { TranslationHover } from './translator'
 
@@ -10,12 +12,15 @@ interface EngineQuickPickItem extends vscode.QuickPickItem {
 export function activate(context: vscode.ExtensionContext): void {
   const store = new EngineStore(context)
   const translationHover = new TranslationHover(store)
+  const statusBar = new TranslationStatusBar(() => translationHover.hideActiveTranslation())
 
   context.subscriptions.push(
     translationHover,
+    statusBar,
     vscode.commands.registerCommand('selectionTranslator.translate', () =>
       translationHover.translateSelection(),
     ),
+    vscode.commands.registerCommand(TOGGLE_STATUS_BAR_COMMAND, () => statusBar.toggle()),
     vscode.commands.registerCommand('selectionTranslator.copyHoverTranslation', () =>
       translationHover.copyTranslation(),
     ),
@@ -27,6 +32,9 @@ export function activate(context: vscode.ExtensionContext): void {
     ),
     vscode.commands.registerCommand('selectionTranslator.replaceHoverSelection', () =>
       translationHover.replaceOriginal(),
+    ),
+    vscode.commands.registerCommand('selectionTranslator.cancelTranslation', () =>
+      translationHover.cancelTranslation(),
     ),
     vscode.commands.registerCommand('selectionTranslator.manageEngines', () =>
       SettingsPanel.createOrShow(context.extensionUri, store),

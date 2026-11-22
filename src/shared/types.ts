@@ -17,10 +17,14 @@ export interface EngineConfig {
   appSecret?: string
 }
 
+export type HoldTriggerKey = 'Alt' | 'Control' | 'Shift'
+
 export interface ExtensionSettings {
   engines: EngineConfig[]
   defaultEngineId: string | null
   targetLanguage: string
+  holdToTranslate: boolean
+  holdTriggerKey: HoldTriggerKey
 }
 
 export interface TranslateMessage {

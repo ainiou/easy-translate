@@ -1,6 +1,6 @@
 {
   "name": "selection-translator-extension",
-  "version": "1.2.1",
+  "version": "1.4.4",
   "private": true,
   "type": "module",
   "displayName": "Easy Translate",
@@ -38,6 +38,11 @@
         "command": "selectionTranslator.setTargetLanguage",
         "title": "设置目标语言",
         "category": "ET"
+      },
+      {
+        "command": "selectionTranslator.cancelTranslation",
+        "title": "取消当前翻译",
+        "category": "ET"
       }
     ],
     "menus": {
@@ -51,10 +56,9 @@
     },
     "keybindings": [
       {
-        "command": "selectionTranslator.translate",
-        "key": "ctrl+alt+t",
-        "mac": "cmd+alt+t",
-        "when": "editorHasSelection"
+        "command": "selectionTranslator.cancelTranslation",
+        "key": "escape",
+        "when": "editorTextFocus && selectionTranslator.hasTranslation"
       }
     ],
     "configuration": {
@@ -68,7 +72,7 @@
         "selectionTranslator.autoTranslate": {
           "type": "boolean",
           "default": true,
-          "description": "选中文本后自动在选区附近显示悬浮翻译；关闭后仍可使用右键或快捷键翻译。"
+          "description": "选中文本后自动在选区附近显示悬浮翻译。可通过状态栏的“ET 划词翻译”按钮随时开关；关闭后仍可使用右键菜单或命令面板手动翻译。"
         },
         "selectionTranslator.hoverAutoHideDelay": {
           "type": "number",

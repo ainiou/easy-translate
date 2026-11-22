@@ -8,6 +8,7 @@ import type {
   EngineConfig,
   EngineType,
   ExtensionSettings,
+  HoldTriggerKey,
   TestEngineMessage,
 } from '../shared/types'
 
@@ -20,7 +21,7 @@ const settings = ref<ExtensionSettings>(createDefaultSettings())
 const form = ref<EngineConfig>(createEmptyForm())
 const formVisible = ref(false)
 const loading = ref(true)
-const busyAction = ref<'test' | 'save' | 'delete' | 'default' | null>(null)
+const busyAction = ref<'test' | 'save' | 'delete' | 'default' | 'trigger' | null>(null)
 const status = ref<StatusMessage | null>(null)
 const testTranslation = ref('')
 
@@ -34,6 +35,11 @@ const showApiKey = computed(() =>
 )
 const showCredentials = computed(() => ['youdao', 'baidu'].includes(currentType.value))
 const apiKeyLabel = computed(() => (currentType.value === 'deepl' ? 'Auth Key' : 'API Key'))
+const triggerKeyOptions: Array<{ value: HoldTriggerKey; label: string }> = [
+  { value: 'Alt', label: 'Alt' },
+  { value: 'Control', label: 'Ctrl' },
+  { value: 'Shift', label: 'Shift' },
+]
 
 function createEmptyForm(): EngineConfig {
   return createEmptyEngine('openai-compatible')
@@ -236,6 +242,29 @@ async function setDefaultEngine(engineId: string): Promise<void> {
   }
 }
 
+async function saveTriggerSettings(): Promise<void> {
+  busyAction.value = 'trigger'
+  status.value = null
+  try {
+    await saveSettings(settings.value)
+    showStatus('success', '触发方式已保存')
+  } catch (error) {
+    showStatus('error', errorMessage(error))
+  } finally {
+    busyAction.value = null
+  }
+}
+
+function handleHoldToggle(enabled: boolean): void {
+  settings.value.holdToTranslate = enabled
+  void saveTriggerSettings()
+}
+
+function handleTriggerKeyChange(key: HoldTriggerKey): void {
+  settings.value.holdTriggerKey = key
+  void saveTriggerSettings()
+}
+
 onMounted(async () => {
   try {
     await loadSettings()
@@ -395,6 +424,44 @@ onMounted(async () => {
           </div>
         </div>
       </form>
+    </section>
+
+    <section class="panel" aria-labelledby="trigger-mode-title">
+      <div class="panel-heading">
+        <div>
+          <h2 id="trigger-mode-title">翻译触发方式</h2>
+          <p>控制划词翻译在什么时候开始。</p>
+        </div>
+      </div>
+
+      <label class="toggle-field">
+        <input
+          type="checkbox"
+          :checked="settings.holdToTranslate"
+          :disabled="isBusy"
+          @change="handleHoldToggle(($event.target as HTMLInputElement).checked)"
+        />
+        <span>
+          <strong>仅按住触发键时触发翻译</strong>
+          <small>
+            关闭时保持原有行为：划词后点击“译”按钮翻译。开启后需按住触发键并划词才会翻译，松开触发键立即取消并关闭浮窗。
+          </small>
+        </span>
+      </label>
+
+      <label class="field trigger-key-field">
+        <span>触发键</span>
+        <select
+          :value="settings.holdTriggerKey"
+          :disabled="isBusy || !settings.holdToTranslate"
+          @change="handleTriggerKeyChange(($event.target as HTMLSelectElement).value as HoldTriggerKey)"
+        >
+          <option v-for="option in triggerKeyOptions" :key="option.value" :value="option.value">
+            {{ option.label }}
+          </option>
+        </select>
+        <small>按住该键并划词后自动翻译，松开即关闭；快速点按不会触发。</small>
+      </label>
     </section>
 
     <aside class="security-note">
@@ -747,6 +814,41 @@ input:disabled {
   color: #667085;
   font-size: 12px;
   line-height: 1.7;
+}
+
+.toggle-field {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  margin-bottom: 16px;
+  cursor: pointer;
+}
+
+.toggle-field input {
+  width: 16px;
+  height: 16px;
+  margin-top: 2px;
+  accent-color: #565ed8;
+}
+
+.toggle-field span {
+  display: grid;
+  gap: 4px;
+}
+
+.toggle-field strong {
+  color: #344054;
+  font-size: 13px;
+}
+
+.toggle-field small {
+  color: #8a93a2;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.trigger-key-field {
+  max-width: 240px;
 }
 
 .security-note strong {
