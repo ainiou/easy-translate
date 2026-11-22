@@ -57,6 +57,15 @@ const appSecretPlaceholder = computed(() =>
   hasStoredAppSecret.value ? '已保存，留空保持不变' : '请输入应用密钥',
 )
 
+const LANGUAGE_OPTIONS = ['简体中文', 'English']
+
+const languageOptions = computed(() => {
+  const current = targetLanguage.value.trim()
+  return current && !LANGUAGE_OPTIONS.includes(current)
+    ? [current, ...LANGUAGE_OPTIONS]
+    : [...LANGUAGE_OPTIONS]
+})
+
 function applyState(nextState: ExtensionViewState): void {
   state.value = nextState
   targetLanguage.value = nextState.targetLanguage
@@ -216,15 +225,18 @@ onMounted(async () => {
     <section class="panel target-panel">
       <div>
         <h2>目标语言</h2>
-        <p>支持语言名称或语言代码，例如简体中文、English、日语、en。</p>
+        <p>选择译文的目标语言，修改后点击保存。</p>
       </div>
       <div class="target-control">
-        <input
+        <select
           v-model="targetLanguage"
-          type="text"
           :disabled="isBusy"
-          @keydown.enter="saveTargetLanguage"
-        />
+          aria-label="目标语言"
+        >
+          <option v-for="language in languageOptions" :key="language" :value="language">
+            {{ language }}
+          </option>
+        </select>
         <button class="button secondary" type="button" :disabled="isBusy" @click="saveTargetLanguage">
           {{ busyAction === 'target' ? '保存中…' : '保存' }}
         </button>
@@ -397,9 +409,9 @@ h2 { margin-bottom: 6px; font-size: 16px; }
 .panel-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 16px; margin-bottom: 18px; }
 .target-panel { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
 .target-control { display: flex; flex-shrink: 0; gap: 8px; }
-.target-control input, .field input, .field select { min-width: 0; padding: 7px 9px; border: 1px solid var(--vscode-input-border, transparent); border-radius: 4px; outline: none; color: var(--vscode-input-foreground); background: var(--vscode-input-background); }
-.target-control input { width: 180px; }
-.target-control input:focus, .field input:focus, .field select:focus { border-color: var(--vscode-focusBorder); }
+.target-control input, .target-control select, .field input, .field select { min-width: 0; padding: 7px 9px; border: 1px solid var(--vscode-input-border, transparent); border-radius: 4px; outline: none; color: var(--vscode-input-foreground); background: var(--vscode-input-background); }
+.target-control input, .target-control select { width: 180px; }
+.target-control input:focus, .target-control select:focus, .field input:focus, .field select:focus { border-color: var(--vscode-focusBorder); }
 .count, .default-badge, .type-badge { flex-shrink: 0; padding: 3px 8px; border-radius: 999px; font-size: 11px; }
 .count, .default-badge { color: var(--vscode-badge-foreground); background: var(--vscode-badge-background); }
 .type-badge { color: var(--vscode-textLink-foreground); background: var(--vscode-textBlockQuote-background); }
@@ -442,7 +454,7 @@ h2 { margin-bottom: 6px; font-size: 16px; }
   .page-shell { width: calc(100% - 24px); padding: 24px 0; }
   .page-header, .engine-item, .target-panel { align-items: stretch; flex-direction: column; }
   .page-header .button { align-self: flex-start; }
-  .target-control input { width: 100%; }
+  .target-control input, .target-control select { width: 100%; }
   .engine-actions { justify-content: flex-start; }
   .form-grid { grid-template-columns: 1fr; }
 }
